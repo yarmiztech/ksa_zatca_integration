@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_move_form_report" model="ir.ui.view">
+        <field name="name">view.move.form.inherit</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="model">account.move</field>
+        <field type="xml" name="arch">
+            <xpath expr="//button[@name='action_post']" position="replace">
+                <button name="print_einv_standard" type="object" string="Print E-invoice Standard" class="oe_highlight"
+                        attrs="{'invisible':[ '|', ('state','!=','posted'), ('l10n_sa_invoice_type','!=', 'Standard')]}"/>
+                <button name="print_einv_b2c" type="object" string="Print E-invoice Simplified" class="oe_highlight"
+                        attrs="{'invisible':[ '|', ('state','!=','posted'), ('l10n_sa_invoice_type','!=', 'Simplified')]}"/>
+                <!--                groups="tax_reports.group_e_invoice_b2c"/>-->
+            </xpath>
+            <xpath expr="//field[@name='invoice_date']" position="after">
+                <field name="l10n_sa_qr_code_str" invisible="1"/>
+                <field name="invoice_multi_currency_id" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

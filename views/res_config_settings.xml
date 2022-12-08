@@ -1,0 +1,75 @@
+<odoo>
+    <record model="ir.ui.view" id="res_config_settings_view_form">
+        <field name="name">res.config.settings.form</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority" eval="100"/>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('settings')]" position="inside">
+                <div class="app_settings_block" data-string="ZATCA" string="ZATCA"
+                     data-key="ZATCA">
+                    <h2>ZATCA</h2>
+                    <div class="row mt16 o_settings_container">
+                        <div class="col-12 col-lg-12 o_setting_box">
+                            <field name="zatca_onboarding_status" invisible="1"/>
+                            <div>
+                                <h6>User documentation</h6>
+                                <p>
+                                    <a href="https://zatca.gov.sa/en/E-Invoicing/Introduction/Guidelines/Documents/Fatoora%20portal%20user%20manual.pdf">
+                                        Onboarding the EGS and generating CSID
+                                    </a>
+                                    <a href="https://zatca.gov.sa/en/E-Invoicing/Introduction/FAQ/Pages/default.aspx">
+                                        FAQ's
+                                    </a>
+<!--                                    <a href="https://zatca.gov.sa/en/E-Invoicing/Introduction/Guidelines/Documents/E-Invoicing_Detailed__Guideline.pdf">-->
+<!--                                        Examples-->
+<!--                                    </a>-->
+                                </p>
+                            </div>
+                            <group>
+                                <group>
+<!--                                    <field name="zatca_onboarding_status"/>-->
+                                    <field name="csr_common_name"/>
+                                    <field name="csr_serial_number"/>
+                                    <field name="csr_organization_identifier"/>
+                                    <field name="csr_organization_unit_name"/>
+                                    <field name="csr_organization_name"/>
+                                </group>
+                                <group>
+                                    <field name="csr_country_name"/>
+                                    <field name="csr_invoice_type"/>
+                                    <field name="csr_location_address"/>
+                                    <field name="csr_industry_business_category"/>
+                                    <field name="csr_otp"/>
+                                </group>
+                            </group>
+                            <group>
+                                <field name="zatca_link"/>
+                                <field name="csr_certificate" required="0"/>
+                                <field name="zatca_status" readonly="1"/>
+                            </group>
+                            <group>
+                                <field name="zatca_is_sandbox"/>
+                                <field name="zatca_private_key"
+                                       attrs="{'required':[('zatca_is_sandbox','=', True)], 'invisible':[('zatca_is_sandbox','!=', True)]}"/>
+                            </group>
+                            <group col="3">
+                                <button name="generate_zatca_certificate"
+                                        string="Generate Certificate &amp; Sandbox Credentials" type="object"
+                                        class="btn-primary"/>
+                                <button name="register_certificate" string="Register Certificate" type="object"
+                                        class="btn-primary"/>
+
+                                <button name="production_credentials" string="Get Production Credentials" type="object"
+                                        class="btn-primary" attrs="{'invisible':[('zatca_onboarding_status','!=', True)]}"/>
+                                <button name="production_credentials_renew" string="Renew Production Credentials"
+                                        type="object" class="btn-primary"
+                                        attrs="{'invisible':[('zatca_onboarding_status','!=', True)]}"/>
+                            </group>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

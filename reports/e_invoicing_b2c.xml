@@ -1,0 +1,559 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <report
+            id="report_e_invoicing_b2c"
+            string="E Invoicing B2C"
+            model="account.move"
+            report_type="qweb-pdf"
+            name="ksa_zatca_integration.report_e_invoicing_b2c_name"
+            file="ksa_zatca_integration.report_e_invoicing_b2c_name"
+            print_report_name="(object._get_zatca_report_base_filename())"
+            menu="False"
+    />
+
+    <template id="report_e_invoicing_b2c_name">
+        <t t-call="web.basic_layout">
+            <style type="text/css">
+                <![CDATA[
+                @font-face {
+                    font-family: 'Arial';
+                    font-weight: bold;
+                    font-style: bold;
+                    src: url('/tax_reports/static/src/fonts/arial.ttf')
+                    format('truetype');
+                        }
+                 tr,td {
+                    font-family: 'Arial';
+                        }
+
+                    ]]>
+            </style>
+            <t t-foreach="docs" t-as="doc">
+
+                <t t-set="active_currency" t-as="doc.invoice_multi_currency_id"/>
+                <div class="pos-receipt" style="text-align: left;
+                                width: 300px;
+                                background-color: white;
+                                font-size: 14px;
+                                padding:0;
+                                margin:0;
+                                padding-bottom: 30px;
+                                display: inline-block;
+                                font-family: 'Arial';
+                                overflow: hidden;">
+                    <t t-if="doc.env.user.company_id.logo">
+                        <!--                            <img style="width: 50%;-->
+                        <!--                                        display: block;-->
+                        <!--                                        margin: 0 auto;"-->
+                        <!--                                 class="pos-receipt-logo" t-att-src="doc.env.user.company_id.logo" alt="Logo"/>-->
+                        <img t-attf-src="data:image/*;base64,{{doc.env.user.company_id.logo}}"
+                             style="max-height:500px; max-width:50%;display: block;margin: 0 auto;"
+                             t-options='{"widget": "image"}'></img>
+                        <br/>
+                    </t>
+                    <t t-if="not doc.env.user.company_id.logo">
+                        <h2 style="text-align: center;" class="pos-receipt-center-align">
+                            <t t-esc="doc.env.user.company_id.name"/>
+                        </h2>
+                        <br/>
+                    </t>
+                    <!--                    <div class="pos-receipt-contact" style="text-align: center;">-->
+                    <!--                        <t t-if="doc.env.user.company_id.street">-->
+                    <!--                            <div>-->
+                    <!--                                <t t-esc="doc.env.user.company_id.street"/>-->
+                    <!--                            </div>-->
+                    <!--                        </t>-->
+                    <!--                        <t t-if="doc.env.user.company_id.phone">-->
+                    <!--                            <div>Tel:-->
+                    <!--                                <t t-esc="doc.env.user.company_id.phone"/>-->
+                    <!--                            </div>-->
+                    <!--                        </t>-->
+                    <!--                        <t t-if="doc.env.user.company_id.vat">-->
+                    <!--                            <div><span>Tax ID</span>:-->
+                    <!--                                <t t-esc="doc.env.user.company_id.vat"/>-->
+                    <!--                            </div>-->
+                    <!--                        </t>-->
+                    <!--                        <t t-if="doc.env.user.company_id.email">-->
+                    <!--                            <div>-->
+                    <!--                                <t t-esc="doc.env.user.company_id.email"/>-->
+                    <!--                            </div>-->
+                    <!--                        </t>-->
+                    <!--                        <t t-if="doc.env.user.company_id.website">-->
+                    <!--                            <div>-->
+                    <!--                                <t t-esc="doc.env.user.company_id.website"/>-->
+                    <!--                            </div>-->
+                    <!--                        </t>-->
+                    <!--                    </div>-->
+                    <div class="pos-receipt-contact"
+                         style="padding-top:10px;text-align: center;font-weight:bold;font-size:15px;">
+                        <span>فاتورة ضريبية مبسطة</span>
+                        <br/>
+                        <span>Simplified Tax Invoice</span>
+                    </div>
+                    <hr/>
+                    <!-- Seller Details -->
+
+                    <div>
+                        <table width="100%" style="border-bottom:1pt dashed black;">
+                            <t t-if="doc.reversed_entry_id">
+                                <tr>
+                                    <td width="30%">
+                                        <span style="font-size:11px;font-weight:bold;">
+                                            <b>Credit Note #:</b>
+                                        </span>
+                                    </td>
+                                    <td width="40%" style="font-size:11px;">
+                                        <span style="font-size:11px" id="invoice_number">
+                                            <t t-esc="doc.name"/>
+                                        </span>
+                                    </td>
+                                    <!--                                <td width="30%" style="font-size:11px;">-->
+                                    <!--                                    <span id="invoice_number1" style="font-size:11px">-->
+                                    <!--                                        <t t-esc="doc.name"/>-->
+                                    <!--                                    </span>-->
+                                    <!--                                </td>-->
+                                    <td width="30%">
+                                        <span style="font-size:11px;font-weight:bold;">:اشعار دائن</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td width="30%">
+                                        <span style="font-size:11px;font-weight:bold;">
+                                            <b>Credit Note Date:</b>
+                                        </span>
+                                    </td>
+                                    <td width="40%" style="font-size:11px;">
+                                        <span style="font-size:11px" id="invoice_number">
+                                            <t t-esc="doc.invoice_datetime"/>
+                                            <t t-esc="doc.invoice_multi_currency_id"/>
+
+                                        </span>
+                                    </td>
+                                    <!--                                <td width="30%" style="font-size:11px;">-->
+                                    <!--                                    <span id="invoice_number1" style="font-size:11px">-->
+                                    <!--                                        <t t-esc="doc.name"/>-->
+                                    <!--                                    </span>-->
+                                    <!--                                </td>-->
+                                    <td width="30%">
+                                        <span style="font-size:11px;font-weight:bold;">:تاريخ اشعار دائن</span>
+                                    </td>
+                                </tr>
+                            </t>
+
+                            <!--                            #normal invoice-->
+                            <t t-if="doc.reversed_entry_id">
+                                <tr>
+                                    <td width="30%">
+                                        <span style="font-size:11px;font-weight:bold;">
+                                            <b>Invoice Number:</b>
+                                        </span>
+                                    </td>
+                                    <td width="40%" style="font-size:11px;">
+                                        <span style="font-size:11px" id="invoice_number">
+                                            <t t-esc="doc.reversed_entry_id.name"/>
+                                        </span>
+                                    </td>
+                                    <!--                                <td width="30%" style="font-size:11px;">-->
+                                    <!--                                    <span id="invoice_number1" style="font-size:11px">-->
+                                    <!--                                        <t t-esc="doc.name"/>-->
+                                    <!--                                    </span>-->
+                                    <!--                                </td>-->
+                                    <td width="30%">
+                                        <span style="font-size:11px;font-weight:bold;">:رقم الفاتورة</span>
+                                    </td>
+                                </tr>
+                            </t>
+                            <t t-if="not doc.reversed_entry_id">
+                                <tr>
+                                    <td width="30%">
+                                        <span style="font-size:11px;font-weight:bold;">
+                                            <b>Invoice Number:</b>
+                                        </span>
+                                    </td>
+                                    <td width="40%" style="font-size:11px;">
+                                        <span style="font-size:11px" id="invoice_number">
+                                            <t t-esc="doc.name"/>
+                                        </span>
+                                    </td>
+                                    <!--                                <td width="30%" style="font-size:11px;">-->
+                                    <!--                                    <span id="invoice_number1" style="font-size:11px">-->
+                                    <!--                                        <t t-esc="doc.name"/>-->
+                                    <!--                                    </span>-->
+                                    <!--                                </td>-->
+                                    <td width="30%">
+                                        <span style="font-size:11px;font-weight:bold;">:رقم الفاتورة</span>
+                                    </td>
+                                </tr>
+                            </t>
+                            <tr>
+                                <td width="30%">
+                                    <span style="font-size:11px;font-weight:bold;">
+                                        <b>Invoice Type Code:</b>
+                                    </span>
+                                </td>
+                                <td width="40%" style="font-size:11px;">
+                                    <t t-esc="doc.get_invoice_type_code()"/>
+                                </td>
+                                <td width="30%">
+                                    <span style="font-size:11px;font-weight:bold;"></span>
+                                </td>
+                            </tr>
+                            <tr t-if="doc.debit_origin_id.id or doc.move_type == 'out_refund'">
+                                <td width="30%">
+                                    <span style="font-size:11px;font-weight:bold;" t-if="doc.debit_origin_id.id">
+                                        <b>Debit Note Reason:</b>
+                                    </span>
+                                    <span style="font-size:11px;font-weight:bold;" t-else="">
+                                        <b>Credit Note Reason:</b>
+                                    </span>
+                                </td>
+                                <td width="40%" style="font-size:11px;">
+                                    <t t-esc="doc.credit_debit_reason"/>
+                                </td>
+                                <td width="30%">
+                                    <span style="font-size:11px;font-weight:bold;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="30%">
+                                    <span style="font-size:11px;font-weight:bold;">
+                                        <b>Invoice Issue Date:</b>
+                                    </span>
+                                </td>
+                                <td width="40%" style="font-size:11px;">
+                                    <t t-esc="doc.invoice_date"/>
+                                </td>
+                                <!--                                <td width="30%" style="font-size:11px;">-->
+                                <!--                                    <t t-esc="context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d %H:%M:%S')"/>-->
+                                <!--                                </td>-->
+                                <td width="30%">
+                                    <span style="font-size:11px;font-weight:bold;">:تاريخ إصدار الفاتورة</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="30%">
+                                    <span style="font-size:11px;font-weight:bold;">
+                                        <b>Delivery Date:</b>
+                                    </span>
+                                </td>
+                                <td width="40%" style="font-size:11px;">
+                                    <t t-esc="doc.l10n_sa_delivery_date"/>
+                                </td>
+                                <td width="30%">
+                                    <span style="font-size:11px;font-weight:bold;">:</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="30%">
+                                    <span style="font-size:11px;font-weight:bold;">
+                                        <b>Name:</b>
+                                    </span>
+                                </td>
+                                <td width="40%" style="font-size:11px;">
+                                    <t t-if="doc.env.user.company_id.name" t-esc="doc.env.user.company_id.name"/>
+                                </td>
+                                <td width="30%">
+                                    <span style="font-size:11px;font-weight:bold;">:اسم المؤسسة</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="30%">
+                                    <span style="font-size:11px;font-weight:bold;">
+                                        <b>Other Seller Type:</b>
+                                    </span>
+                                </td>
+                                <td width="40%" style="font-size:11px;">
+                                    <t t-esc="doc.env['ir.model.fields.selection'].search([('field_id', '=', doc.env['ir.model.fields'].search([('name', '=', 'license'), ('model_id', '=', doc.env['ir.model'].search([('model', '=', 'res.company')]).id)]).id), ('value', '=', doc.company_id.license)]).name"/>
+                                    (<t t-esc="doc.company_id.license"/>)
+                                </td>
+                                <td width="30%">
+                                    <span style="font-size:11px;font-weight:bold;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="30%">
+                                    <span style="font-size:11px;font-weight:bold;">
+                                        <b>Other Seller Id:</b>
+                                    </span>
+                                </td>
+                                <td width="40%" style="font-size:11px;">
+                                    <t t-esc="doc.company_id.license_no"/>
+                                </td>
+                                <td width="30%">
+                                    <span style="font-size:11px;font-weight:bold;">:اسم المؤسسة</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="30%">
+                                    <span style="font-size:11px;font-weight:bold;">
+                                        <b>Address:</b>
+                                    </span>
+                                </td>
+                                <td width="40%" style="font-size:11px;">
+                                    <t t-if="doc.company_id.building_no" t-esc="doc.company_id.building_no"/>,
+                                    <t t-if="doc.company_id.street" t-esc="doc.company_id.street"/>
+                                    <t t-if="doc.company_id.street2" t-esc="doc.company_id.street2"/>,
+                                    <t t-if="doc.company_id.additional_no" t-esc="doc.company_id.additional_no"/>,
+                                    <t t-if="doc.company_id.district" t-esc="doc.company_id.district"/>,
+                                    <t t-if="doc.company_id.city" t-esc="doc.company_id.city"/>,
+                                    <t t-if="doc.company_id.zip" t-esc="doc.company_id.zip"/>,
+                                    <t t-if="doc.company_id.state_id" t-esc="doc.company_id.state_id.name"/>,
+                                    <t t-if="doc.company_id.country_id" t-esc="doc.company_id.country_id.code"/>
+                                </td>
+                                <td width="30%">
+                                    <span style="font-size:11px;font-weight:bold;">:العنوان</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="30%">
+                                    <span style="font-size:11px;font-weight:bold;">
+                                        <b>VAT:</b>
+                                    </span>
+                                </td>
+                                <td width="40%" style="font-size:11px;">
+                                    <t t-if="doc.company_id.name" t-esc="doc.company_id.vat"/>
+                                </td>
+                                <td width="30%">
+                                    <span style="font-size:11px;font-weight:bold;">:رقم تسجیل ضریبة القیمة المضافة
+                                    </span>
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td width="30%">
+                                    <span style="font-size:11px;font-weight:bold;">
+                                        <b>Customer Name:</b>
+                                    </span>
+                                </td>
+                                <td width="40%" style="font-size:11px;">
+                                    <t t-if="doc.partner_id" t-esc="doc.partner_id.name"/>
+                                </td>
+                                <td width="30%">
+                                    <span style="font-size:11px;font-weight:bold;">:اسم العميل</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="30%">
+                                    <span style="font-size:11px;font-weight:bold;">
+                                        <b>Other Buyer Type:</b>
+                                    </span>
+                                </td>
+                                <td width="40%" style="font-size:11px;">
+                                    <t t-esc="doc.env['ir.model.fields.selection'].search([('field_id', '=', doc.env['ir.model.fields'].search([('name', '=', 'buyer_identification'), ('model_id', '=', doc.env['ir.model'].search([('model', '=', 'res.partner')]).id)]).id), ('value', '=', doc.partner_id.buyer_identification)]).name"/>
+                                    (<t t-esc="doc.partner_id.buyer_identification"/>)
+                                </td>
+                                <td width="30%">
+                                    <span style="font-size:11px;font-weight:bold;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="30%">
+                                    <span style="font-size:11px;font-weight:bold;">
+                                        <b>Other Buyer Id:</b>
+                                    </span>
+                                </td>
+                                <td width="40%" style="font-size:11px;">
+                                    <t t-if="doc.partner_id.buyer_identification_no"
+                                       t-esc="doc.partner_id.buyer_identification_no"/>
+                                </td>
+                                <td width="30%">
+                                    <span style="font-size:11px;font-weight:bold;">:معرف آخر</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="30%">
+                                    <span style="font-size:11px;font-weight:bold;">
+                                        <b>Customer VAT:</b>
+                                    </span>
+                                </td>
+                                <td width="40%" style="font-size:11px;">
+                                    <t t-if="doc.partner_id" t-esc="doc.partner_id.vat"/>
+                                </td>
+                                <td width="30%">
+                                    <span style="font-size:11px;font-weight:bold;">:</span>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <br/>
+                        <table width="100%" style="border-bottom:1pt dashed black;">
+                            <colgroup>
+                                <col width='20%'/>
+                                <col width='15%'/>
+                                <col width='15%'/>
+                                <col width='15%'/>
+                                <col width='35%'/>
+                            </colgroup>
+                            <tr>
+                                <th style="border-bottom:1pt dashed black;vertical-align:bottom; margin-bottom:5pt;padding-bottom:3pt;">
+                                    الاجمالي<br/>Total<br/><span style="font-size:11px;">inclusive of VAT</span>
+                                </th>
+                                <th style="border-bottom:1pt dashed black;vertical-align:bottom; margin-bottom:5pt;padding-bottom:3pt;">
+                                    <br/>Discount<br/>SAR
+                                </th>
+                                <th style="border-bottom:1pt dashed black;vertical-align:bottom;text-align:right;margin-bottom:5pt;padding-bottom:3pt">
+                                    السعر<br/>PRICE
+                                </th>
+                                <th style="border-bottom:1pt dashed black;vertical-align:bottom;text-align:right;margin-bottom:5pt;padding-bottom:3pt">
+                                    الكمية<br/>QTY
+                                </th>
+                                <th style="border-bottom:1pt dashed black;vertical-align:bottom;text-align:center;margin-bottom:5pt;padding-bottom:3pt">
+                                    نوع<br/>Type
+                                </th>
+                                <!--                                <th style="border-bottom:1pt dashed black;vertical-align:bottom;text-align:right;margin-bottom:5pt;padding-bottom:3pt">-->
+                                <!--                                    الوصف<br/>Description-->
+                                <!--                                </th>-->
+                            </tr>
+                            <t t-foreach="doc.invoice_line_ids" t-as="line" t-key="line.id">
+                                <t t-set="total_tax_percent" t-value="0"/>
+                                <t t-set="total_tax_percent_inc" t-value="0"/>
+                                <t t-foreach="line.tax_ids" t-as="tax_line">
+                                    <t t-set="total_tax_percent" t-value="total_tax_percent+tax_line.amount"/>
+                                    <t t-if="tax_line.price_include">
+                                        <t t-set="total_tax_percent_inc"
+                                           t-value="total_tax_percent_inc+tax_line.amount"/>
+                                    </t>
+                                </t>
+                                <tr>
+                                    <td colspan='12'
+                                        style="text-align:center;font-size:11px;max-width:100%">
+                                        <span t-esc="line.name"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:left;font-size:11px;padding: 1px 0;">
+                                        <!--                                        <t t-if="active_currency">-->
+<!--                                        <span t-esc="round(doc.currency_id.compute(line.price_total, doc.invoice_multi_currency_id),2)"/>-->
+                                        <span t-esc="doc.get_bt_131(line.id)"/>
+                                        <!--                                        <t t-if="not active_currency">-->
+                                        <!--                                            <t t-esc="line.price_total"/>-->
+
+                                        <!--                                        </t>-->
+                                    </td>
+                                    <td style="text-align:left;font-size:11px;padding: 1px 0;">
+                                        <span t-esc="doc.get_bt_136(line.id)"/>
+                                    </td>
+                                    <td style="text-align:center;font-size:11px;padding: 3px 0;">
+                                        <!--                                        <t t-if="active_currency">-->
+                                        <span t-if="doc.currency_id"
+                                              t-esc="round(doc.currency_id.compute(round((line.price_unit/(1+total_tax_percent_inc/100)),2), doc.invoice_multi_currency_id),2)"/>
+                                        <!--                                        </t>-->
+                                        <!--                                        <t t-if="not active_currency">-->
+                                        <!--                                            <span t-esc="round((line.price_unit/(1+total_tax_percent_inc/100)),2)"/>-->
+                                        <!--                                        </t>-->
+                                    </td>
+                                    <td style="text-align:center;font-size:11px;padding: 3px 0;">
+                                        <t t-esc="line.quantity"/>
+                                    </td>
+                                    <td style="text-align:center;font-size:11px;padding: 3px 0;">
+                                        <t t-esc="line.product_uom_id.name"/>
+                                    </td>
+                                    <!--                                    <td style="text-align:center;font-size:11px">-->
+                                    <!--                                        <span t-esc="line.product_id.name"/>-->
+                                    <!--                                    </td>-->
+                                </tr>
+                                <tr>
+                                    <td style="border-bottom:1pt dashed black;vertical-align:bottom;">
+                                    </td>
+                                    <td style="border-bottom:1pt dashed black;vertical-align:bottom;">
+                                    </td>
+                                    <td style="border-bottom:1pt dashed black;vertical-align:bottom;">
+                                    </td>
+                                    <td style="border-bottom:1pt dashed black;vertical-align:bottom;">
+                                    </td>
+                                    <td style="border-bottom:1pt dashed black;vertical-align:bottom;">
+                                    </td>
+                                </tr>
+                            </t>
+                        </table>
+                        <hr></hr>
+                        <table width="100%">
+                            <tr>
+                                <td width="40%" style="text-align:left;font-size:11px;padding: 5px 0;">
+                                    <span>Total Taxable Amount (Excluding VAT) :</span>
+                                </td>
+                                <td width="20%" style="text-align:right;font-size:11px;padding: 5px 0;">
+                                    <!--                                    <t t-if="active_currency">-->
+                                    <span t-esc="doc.currency_id.compute(doc.amount_untaxed, doc.invoice_multi_currency_id)"
+                                          t-options='{"widget": "monetary", "display_currency": doc.invoice_multi_currency_id}'/>
+                                    <!--                                    </t>-->
+                                    <!--                                    <t t-if="not active_currency">-->
+                                    <!--                                        <span t-esc="doc.amount_untaxed"/>-->
+                                    <!--                                    </t>-->
+
+                                </td>
+                                <td width="40%" style="text-align:right;font-size:11px;padding: 5px 0;">
+                                    <span>: إجمالي الخاضع للضريبة غیر شامل ضریبة القیمة</span>
+                                </td>
+
+
+                            </tr>
+                            <tr>
+                                <td width="40%" style="text-align:left;font-size:11px;padding: 5px 0;">
+                                    <span>Total VAT :</span>
+                                </td>
+                                <td width="20%" style="text-align:right;font-size:11px;padding: 5px 0;">
+                                    <!--                                    <t t-if="active_currency">-->
+                                    <span t-esc="doc.currency_id.compute(doc.amount_tax, doc.invoice_multi_currency_id)"
+                                          t-options='{"widget": "monetary", "display_currency": doc.invoice_multi_currency_id}'/>
+                                    <!--                                    </t>-->
+                                    <!--                                    <t t-if="not active_currency">-->
+                                    <!--                                        <span t-esc="doc.amount_tax"/>-->
+                                    <!--                                    </t>-->
+
+                                </td>
+                                <td width="40%" style="text-align:right;font-size:11px;padding: 5px 0;">
+                                    <span>: مجموع ضریبة القیمة المضافة</span>
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td width="40%" style="text-align:left;font-size:11px;padding: 5px 0;">
+                                    <span>Total Amount:</span>
+                                </td>
+                                <td width="20%" style="text-align:right;font-size:11px;padding: 5px 0;">
+                                    <span t-esc="doc.currency_id.compute(doc.amount_total, doc.invoice_multi_currency_id)"
+                                          t-options='{"widget": "monetary", "display_currency": doc.invoice_multi_currency_id}'/>
+                                </td>
+                                <td width="40%" style="text-align:right;font-size:11px;padding: 5px 0;">
+                                    <span></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="40%" style="text-align:left;font-size:11px;padding: 5px 0;">
+                                    <span>Amount Due :</span>
+                                </td>
+                                <td width="20%" style="text-align:right;font-size:11px;padding: 5px 0;">
+                                    <!--                                    <t t-if="active_currency">-->
+                                    <span t-esc="doc.currency_id.compute(doc.amount_residual, doc.invoice_multi_currency_id)"
+                                          t-options='{"widget": "monetary", "display_currency": doc.invoice_multi_currency_id}'/>
+                                    <!--                                    </t>-->
+                                    <!--                                    <t t-if="not active_currency">-->
+                                    <!--                                        <span t-esc="doc.amount_total"/>-->
+                                    <!--                                    </t>-->
+
+                                </td>
+                                <td width="40%" style="text-align:right;font-size:11px;padding: 5px 0;">
+                                    <span>: إجمالي المبلغ المستحق</span>
+                                </td>
+                            </tr>
+                        </table>
+                        <hr></hr>
+                    </div>
+
+
+                    <!-- QR code Data -->
+                    <div class="page" style="text-align:center;">
+                        <img style="text-align:center;" alt="Barcode"
+                             t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s'%('QR', doc.l10n_sa_qr_code_str, 120,120)"/>
+                    </div>
+
+                    <div width="100%" class="page" style="text-align:center;">
+                        <span style="display:flex;align:center">Thank You</span>
+                    </div>
+
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="paperformat_etaxinvoice_template_import" model="report.paperformat">
+        <field name="name">European A4 low margin</field>
+        <field name="default" eval="True"/>
+        <field name="format">A4</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">2</field>
+        <field name="margin_bottom">42</field>
+        <field name="margin_left">10</field>
+        <field name="margin_right">10</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">2</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <!--    <report-->
+    <!--            id="report_einvoice_order_report"-->
+    <!--            string="E-Invoice Report"-->
+    <!--            model="account.move"-->
+    <!--            report_type="qweb-html"-->
+    <!--            name="ksa_zatca_integration.report_eInvoixw_report_main_id"-->
+    <!--            file="ksa_zatca_integration.report_eInvoixw_report_main_id"-->
+    <!--            paperformat="paperformat_etaxinvoice_template_import"-->
+
+    <!--    />-->
+
+<!--    <report-->
+<!--            id="report_einvoice_order_report"-->
+<!--            string="E-Invoice الفاتورة الضريبية "-->
+<!--            model="account.move"-->
+<!--            report_type="qweb-pdf"-->
+<!--            name="ksa_zatca_integration.report_eInvoixw_report_main_id"-->
+<!--            file="ksa_zatca_integration.report_eInvoixw_report_main_id"-->
+<!--            paperformat="paperformat_etaxinvoice_template_import"-->
+<!--            print_report_name="'Invoice - %s' % (object.name)"-->
+<!--    />-->
+    <report
+            id="report_sales_order"
+            string="E Invoice Standard"
+            model="account.move"
+            report_type="qweb-pdf"
+            name="ksa_zatca_integration.report_sale_order"
+            file="ksa_zatca_integration.report_sale_order"
+            menu="False"
+            print_report_name="(object._get_zatca_report_base_filename())"
+    />
+</odoo>

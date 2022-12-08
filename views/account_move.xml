@@ -1,0 +1,106 @@
+<odoo>
+    <data>
+        <record id="account_move_view" model="ir.ui.view">
+            <field name="name">account.move</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_move_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//header" position="inside">
+                    <field name="zatca_compliance_invoices_api" invisible="1"/>
+                    <field name="zatca_onboarding_status" invisible="1"/>
+
+<!--                    <button name="create_xml_file" type="object" string="Generate Zatca XML" class="oe_highlight"/>-->
+<!--                    <button name="create_xml_file" type="object" string="Generate Zatca XML" class="oe_highlight"-->
+<!--                            attrs="{'invisible':['|', ('state','!=','posted'), ('zatca_invoice_name','not in', [0, None, '', False])]}"/>-->
+
+                    <button name="send_for_compliance" type="object" string="Send to Zatca for Compliance" class="oe_highlight"
+                            attrs="{'invisible':['|', '|', ('state','!=','posted'), ('zatca_invoice_name','not in', [0, None, '', False]), ('zatca_onboarding_status','=', True)]}"/>
+                    <button name="send_for_clearance" type="object" string="Send to Zatca for Clearance" class="oe_highlight"
+                            attrs="{'invisible':['|', '|', '|', ('state','!=','posted'), ('l10n_sa_invoice_type','!=', 'Standard'), ('zatca_invoice_name','not in', [0, None, '', False]), ('zatca_onboarding_status','=', False)]}"/>
+                    <button name="send_for_reporting" type="object" string="Send to Zatca for Reporting" class="oe_highlight"
+                            attrs="{'invisible':['|', '|', '|', ('state','!=','posted'), ('l10n_sa_invoice_type','!=', 'Simplified'), ('zatca_invoice_name','not in', [0, None, '', False]), ('zatca_onboarding_status','=', False)]}"/>
+
+<!--                    <button name="send_for_compliance" type="object" string="Send to Zatca for Compliance" class="oe_highlight"/>-->
+<!--                    <button name="send_for_clearance" type="object" string="Send to Zatca for Clearance" class="oe_highlight"/>-->
+<!--                    <button name="send_for_reporting" type="object" string="Send to Zatca for Reporting" class="oe_highlight"/>-->
+
+<!--                    <button name="compliance_invoices_api" type="object" string="Compliance Result (sandbox)"-->
+<!--                            class="oe_highlight"-->
+<!--                            attrs="{'invisible':['|', '|', ('state','!=','posted'), ('zatca_invoice_name','in', [0, None, '', False]), ('zatca_onboarding_status','=', True)]}"/>-->
+<!--                    <button name="invoices_clearance_single_api" type="object"-->
+<!--                            string="Clearance Result (production)(normal)"-->
+<!--                            class="oe_highlight"-->
+<!--                            attrs="{'invisible':['|', '|', '|', '|', ('state','!=','posted'), ('l10n_sa_invoice_type','!=', 'Standard'), ('zatca_invoice_name','in', [0, None, '', False]), ('zatca_onboarding_status','=', False), ('zatca_compliance_invoices_api','not in', [0, None, '', False])]}"/>-->
+<!--                    <button name="invoices_reporting_single_api" type="object"-->
+<!--                            string="Reporting Result (production)(simplified)"-->
+<!--                            class="oe_highlight"-->
+<!--                            attrs="{'invisible':['|', '|', '|', '|', ('state','!=','posted'), ('l10n_sa_invoice_type','!=', 'Simplified'), ('zatca_invoice_name','in', [0, None, '', False]), ('zatca_onboarding_status','=', False), ('zatca_compliance_invoices_api','not in', [0, None, '', False])]}"/>-->
+<!--                    <button name="zatca_response" type="object"-->
+<!--                            string="View API response"-->
+<!--                            class="oe_highlight"-->
+<!--                            attrs="{'invisible':[('zatca_compliance_invoices_api','in', [0, None, '', False])]}"/>-->
+                </xpath>
+                <field name="invoice_date" position="replace">
+                    <field name="invoice_datetime" options="{'datepicker': {'warn_future': true}}" nolabel="1"
+                           attrs="{'invisible': [('move_type', 'not in', ('out_invoice', 'out_refund', 'in_invoice', 'in_refund', 'out_receipt', 'in_receipt'))],
+                                   'readonly': [('state', '!=', 'draft')]}"/>
+                    <field name="invoice_date" invisible="1"/>
+                </field>
+                <xpath expr="//notebook" position="before">
+<!--                <xpath expr="//group[@id='header_right_group']" position="after">-->
+                    <group string="Zatca Fields">
+                        <group>
+                            <field name="l10n_sa_invoice_type" required="1" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="l10n_is_third_party_invoice" attrs="{'invisible':[('l10n_sa_invoice_type','=', 'Simplified')],
+                                                                              'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="l10n_is_nominal_invoice" attrs="{'invisible':[('l10n_sa_invoice_type','=', 'Simplified')],
+                                                                          'readonly': [('state', '!=', 'draft')]}"/>
+                        </group>
+                        <group>
+                            <field name="l10n_is_exports_invoice" attrs="{'readonly': [('state', '!=', 'draft')],
+                                                                          'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="l10n_is_summary_invoice" attrs="{'invisible':[('l10n_sa_invoice_type','=', 'Simplified')],
+                                                                          'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="l10n_is_self_billed_invoice" attrs="{'invisible':[('l10n_is_exports_invoice','=', True)],
+                                                                              'readonly': [('state', '!=', 'draft')]}"/>
+                        </group>
+                    </group>
+                </xpath>
+                <xpath expr="//notebook" position="inside">
+                    <page string="Zatca Response"
+                            attrs="{'invisible':[('zatca_invoice','=', False)]}">
+<!--                        <field name="l10n_sa_qr_code_str"/>-->
+<!--                        <hr style="border: 1px solid black;"/>-->
+<!--                        <field name="sa_qr_code_str"/>-->
+<!--                        <hr style="border: 1px solid black;"/>-->
+                        <group col="2">
+                            <field name="zatca_invoice" filename="zatca_invoice_name"
+                                   attrs="{'invisible':['|', ('zatca_invoice','=', False), ('l10n_sa_invoice_type','!=', 'Simplified')]}"/>
+                            <field name="zatca_invoice_name" invisible="1"/>
+                            <!--                    <field name="zatca_hash_invoice" filename="zatca_hash_invoice_name"-->
+                            <!--                           attrs="{'invisible':[('zatca_invoice','=', False)]}"/>-->
+                            <!--                    <field name="zatca_hash_invoice_name" invisible="1"/>-->
+                            <field name="zatca_hash_cleared_invoice_name" invisible="1"/>
+                            <field name="zatca_hash_cleared_invoice" filename="zatca_hash_cleared_invoice_name"
+                                   attrs="{'invisible':[('zatca_hash_cleared_invoice','=', False)]}"/>
+                        </group>
+                        <hr style="border: 1px solid black;"/>
+                        <field name="zatca_compliance_invoices_api"/>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+        <record id="zatca_response" model="ir.ui.view">
+            <field name="name">account.move</field>
+            <field name="model">account.move</field>
+            <field name="priority" eval="1000"/>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <field name="zatca_compliance_invoices_api"/>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

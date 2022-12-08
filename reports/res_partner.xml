@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_partner_form_report" model="ir.ui.view">
+        <field name="name">res.partner.inherit.form</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="model">res.partner</field>
+        <field type="xml" name="arch">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="arabic_name" default_focus="1" placeholder="اسم الزبون"
+                       attrs="{'required' : [('type', '=', 'contact')]}"/>
+            </xpath>
+            <xpath expr="//field[@name='vat']" position="after">
+                <field name="group_vat_no" string="Group Vat No"/>
+                <attribute name="string">VAT</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>
